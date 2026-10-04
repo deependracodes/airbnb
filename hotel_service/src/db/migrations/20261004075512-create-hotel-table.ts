@@ -1,5 +1,7 @@
-module.exports = {
-  async up(queryInterface ) {
+import { QueryInterface } from "sequelize";
+
+export default {
+  async up(queryInterface : QueryInterface) {
     // we can write js code or raw query
     /* await queryInterface.createTable('hotels',{
       id:{
@@ -38,7 +40,7 @@ module.exports = {
     `);
   },
 
-  async down(queryInterface) {
+  async down(queryInterface : QueryInterface  ) {
     await queryInterface.sequelize.query(`
       DROP TABLE IF EXISTS hotels;
     `);

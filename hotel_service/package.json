@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "nodemon --watch src --exec tsx src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "db:migrate": "tsx ./node_modules/sequelize-cli/lib/sequelize db:migrate",
+    "db:migrate:undo": "tsx ./node_modules/sequelize-cli/lib/sequelize db:migrate:undo",
+    "db:seed": "tsx ./node_modules/sequelize-cli/lib/sequelize db:seed:all",
+    "db:seed:undo": "tsx ./node_modules/sequelize-cli/lib/sequelize db:seed:undo"
   },
   "keywords": [],
   "author": "",
