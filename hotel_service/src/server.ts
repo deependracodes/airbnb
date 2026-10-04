@@ -5,6 +5,7 @@ import v2Router from "./router/v2/index.router.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import logger from "./config/logger.config.js";
 import { correlationMiddleware } from "./middlewares/corelation.middleware.js";
+import sequelize from "./db/models/sequelize.js";
 
 const app: Express = express();
 const port = serverConfig.PORT;
@@ -18,8 +19,8 @@ app.use("/api/v2", v2Router);
 
 app.use(errorMiddleware);
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-
+app.listen(port, async() => {
   logger.info(`Server running on http://localhost:${port}`);
+  await sequelize.authenticate();
+  logger.info("Database connected successfully");
 });
