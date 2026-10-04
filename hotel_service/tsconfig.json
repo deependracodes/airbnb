@@ -43,6 +43,6 @@
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/config/config.js", "src/db/migrations/20261004075512-create-hotel-table.js"],
   "exclude": ["node_modules", "dist", "tests"]
 }

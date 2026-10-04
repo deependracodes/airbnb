@@ -1,120 +1,115 @@
-# Express TypeScript Starter Template
+# Understanding ORM and ODM in Backend Development
 
-A lightweight, fully-configured boilerplate for building scalable Node.js backend applications using Express, TypeScript, and live-reloading tools.
+A conceptual guide on how client-server architectures interact with databases using Object-Relational Mappers (ORM) and Object-Document Mappers (ODM).
+
+
+## 1. Request-Response Architecture
+
+In a standard web application, data flows across three main layers:
+
+[ Client ]  <--->  [ Server ]  <--->  [ Database ]
+
+1. **Client:** Sends HTTP/WebSocket requests from browsers or mobile apps to the server.
+2. **Server:** Runs application business logic, processes requests, and queries the database.
+3. **Database:** Manages persistent storage and executes incoming queries.
+
+## 2. The Database Interaction Problem
+
+Databases operate using their own specific query languages and low-level communication protocols:
+
+* **Relational Databases (RDBMS):** Communicate using **SQL** (Structured Query Language) over TCP connections (e.g., PostgreSQL, MySQL).
+* **Document Databases (NoSQL):** Communicate using document wire protocols (e.g., MongoDB's binary wire protocol).
+
+Writing raw query strings directly in JavaScript code introduces several production risks:
+
+* Manual TCP socket connection handling and connection pool management.
+* Lack of end-to-end type safety, leading to runtime failures.
+* Risk of SQL injection vulnerabilities if inputs are poorly sanitized.
+* High maintenance overhead when updating schemas or migrating fields.
+
+
+## 3. What are ORM and ODM?
+
+To bridge the gap between JavaScript/TypeScript code and database network protocols, applications use abstraction layers called **ORMs** and **ODMs**.
+
+These libraries internally translate native JavaScript objects and method calls into database-specific queries and transmit them over established TCP connections.
 
 ---
 
-## Features
+### Object-Relational Mapper (ORM)
 
-- **Express.js**: Fast, unopinionated, minimalist web framework.
-- **TypeScript**: Full type safety with pre-configured tsconfig settings.
-- **Direct Execution**: Run `.ts` files directly in development without manual build steps using `tsx`.
-- **Live Reloading**: Automatic server restart on file changes using `nodemon` or Node.js native `--watch` mode.
+An **ORM** maps JavaScript objects to relational database tables (SQL / RDBMS).
 
----
+* **Concept:** Maps JavaScript/TypeScript classes or schemas to SQL tables, rows, and foreign key relationships.
+* **Popular Tools:** Prisma, Sequelize, TypeORM, Drizzle.
+* **Target Databases:** PostgreSQL, MySQL, SQLite, MariaDB, SQL Server.
 
-## Project Setup
-
-### 1. Initialize Node.js Project
-```bash
-npm init -y
-
-### enable module in package.json
-"type": "module"
-
-
-### 2. Install Core Dependencies
-npm i express
-
-### 3. Install Development & TypeScript Dependencies
-# TypeScript compiler & runtime execution engine
-npm i -D typescript tsx
-
-# Node.js and Express type definitions
-npm i -D @types/node @types/express
-
-# Hot-reloading watcher (optional if using Node 18+ native watcher)
-npm i -D nodemon
-
-### 4. Initialize TypeScript Configuration
-npx tsc --init
-
-### 5. Recommended tsconfig.json Configuration
-{
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true
-  },
-  "include": ["src/**/*"],
-  "exclude: ["node_modules"]
-}
-
-### 6. scripts
-"scripts": {
-  "dev": "tsx watch src/index.ts",
-  "build": "tsc",
-  "start": "node dist/index.js"
-}
-
-or nodemon
-
-"scripts": {
-  "dev": "nodemon --watch src --exec tsx src/index.ts",
-  "build": "tsc",
-  "start": "node dist/index.js"
-}
-
-
-### 7. Environmental variables
-  - sensitive info can be stored in operating system level not directly on codebase like passwords, db urls etc
-  - any process can access it 
-  - npm i dotenv
-
-### 8. Api versioning also added
-
-### 9. Added serilization & deserilaization middlewares for incoming request body , query params , path params ...
-
-
-### 10. Zod validation for incoming request body or any objects
-  - npm i zod
-  - define schema - validate object
-
-ex : 
-```
-import { z, ZodError } from "zod";
-
-const obj = {
-  name: "xyz",
-  age: -20,
-};
-
-const objSchema = z.object({
-  name: z.string(),
-  age: z.number().int().positive(),
+```javascript
+// Native JavaScript ORM Call (e.g., Prisma)
+const user = await prisma.user.findUnique({
+  where: { id: 1 }
 });
 
-try {
-  const result = objSchema.parse(obj);
-  console.log(result);
-} catch (error) {
-  if (error instanceof ZodError) {
-    // Extract array of strings: ["Too small: expected number to be >0"]
-    const messages = error.issues.map((issue) => issue.message);
-    console.log(messages); || console.log(messages[0])
-  }
-}
-```
+// Translated Internal SQL Query executed over TCP
+// SELECT * FROM "User" WHERE "id" = 1;
+
+### Object-Document Mapper (ODM)
+
+An ODM maps JavaScript objects to document collections (NoSQL).
+
+* Concept: Maps JavaScript objects directly to BSON/JSON documents and schemas.
+* Popular Tools: Mongoose.
+*Target Databases: MongoDB.
 
 
-### 11. Setup Error handler for synchronous and async synchronous tasks
- - defualt express error middleware : next(err)
- - custom error middleware 
- - express v5 - auto handles errors
+## Here we will use sequelize
+Core Architecture & Drivers
 
+Sequelize provides high-level abstractions for models, migrations, and transactions, but it **does not** communicate directly with the database on its own. It requires a database driver to handle low-level TCP socket connections.
+
+* **Database Driver (`mysql2`):** Low-level client library that converts JavaScript calls into MySQL's wire protocol over TCP. You can also use `mysql2` directly if you need to execute raw SQL queries without ORM overhead.
+* **ORM (`sequelize`):** High-level abstraction layer that manages database connections using `mysql2`, builds SQL queries, and maps results to JavaScript objects.
+
+---
+
+## 2. Installation
+
+Install the ORM and the database driver as core dependencies, and the CLI tool as a development dependency:
+
+```bash
+# Install Sequelize ORM and MySQL driver
+npm i sequelize mysql2
+
+# Install Sequelize CLI for migrations and boilerplate generation
+npm i -D sequelize-cli
+
+### Setup sequelize cli
+
+- add this file for better codin practive 
+
+- hotel_service/.sequelizerc
+ run -npx sequelize-cli init 
+
+ - it generates folders and files
+ - config/ :	Database configuration settings (host, port, credentials, dialect) across development, test, and production environments (config.json or config.js).
+ - models/ :	Data models representing database tables, schemas, data types, and relationships (associations like hasMany, belongsTo).
+ - migrations/ :	Version control for your database structure. Defines incremental, reversible changes (up and down methods) to keep schemas synchronized across teams.
+ - seeders/ :	Mock or initial bootstrap data used to populate database tables for development, testing, or environment initialization.
+
+
+### created airbnb db in mysqlworkbench
+
+### create first migration
+npx sequelize-cli migration:generate --name create-hotel-table
+
+
+### migration has 2 things
+  - up : contains code which make new changes in db
+  - down : contains coed which will revert the changes back
+
+### make changes in migrations file and run the migration it will apply
+
+- npx sequelize-cli db:migrate
+- npx sequelize-cli db:migrate:undo
+
+### check migration applied and hotels table is created
