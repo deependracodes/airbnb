@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/errors/app.error.js";
 
-export const errorMiddleware = (err:AppError, req:Request,res:Response,next:NextFunction) => {
+export const appErrorHandler = (err:AppError, req:Request,res:Response,next:NextFunction) => {
 
      console.log(err);
      
@@ -12,4 +12,15 @@ export const errorMiddleware = (err:AppError, req:Request,res:Response,next:Next
     })
 
 
+}
+
+
+
+export const genericErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.log(err);
+
+    res.status(500).json({
+        success: false,
+        message: "Internal Server Error"
+    });
 }

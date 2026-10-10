@@ -113,3 +113,23 @@ npx sequelize-cli migration:generate --name create-hotel-table
 - npx sequelize-cli db:migrate:undo
 
 ### check migration applied and hotels table is created
+
+### npm i bullmq ioredis node-cron
+ - bullmq - Redis-based distributed queue for Node.js
+ - ioredis - Redis client for Node.js.
+ - node-cron - scheducle automated tasks that runs at a specific time interval
+ - Also make sure to download redis in your specific os and start the redis server locally or also can use docker image as well
+
+
+### start a redis server
+  - open ubuntu
+  - sudo service redis-server start
+  - redis-cli
+  - ping 
+  - redis server is runing successfully
+
+### Connect usin git bash
+  - wsl -d Ubuntu sudo service redis-server start
+  - wsl -d Ubuntu redis-cli
+
+

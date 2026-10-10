@@ -26,7 +26,6 @@
     /* Additional safety */
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
     "forceConsistentCasingInFileNames": true,
 
     /* Modules */

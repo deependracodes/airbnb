@@ -15,6 +15,11 @@ type DatabaseConfig = {
   DB_PORT: number;
 };
 
+type RedisConfig = {
+   REDIS_PORT: number,
+   REDIS_HOST: string,
+}
+
 export const serverConfig: ServerConfig = {
   PORT: Number(process.env.PORT) || 3000,
 };
@@ -26,3 +31,8 @@ export const dbConfig: DatabaseConfig = {
   DB_PORT : Number(process.env.DB_PORT) || 3306,
   DB_NAME: process.env.DB_NAME || "airbnb",
 };
+
+export const redisConfig : RedisConfig = {
+    REDIS_PORT: process.env.REDIS_PORT ? Number(process.env.REDIS_PORT) : 6379,
+    REDIS_HOST: process.env.REDIS_HOST || 'localhost',
+}
