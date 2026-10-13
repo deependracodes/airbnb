@@ -20,6 +20,10 @@ type RedisConfig = {
    REDIS_HOST: string,
 }
 
+type CronConfig = {
+     ROOM_CRON : string
+}
+
 export const serverConfig: ServerConfig = {
   PORT: Number(process.env.PORT) || 3000,
 };
@@ -35,4 +39,8 @@ export const dbConfig: DatabaseConfig = {
 export const redisConfig : RedisConfig = {
     REDIS_PORT: process.env.REDIS_PORT ? Number(process.env.REDIS_PORT) : 6379,
     REDIS_HOST: process.env.REDIS_HOST || 'localhost',
+}
+
+export const cronConfig : CronConfig = {
+  ROOM_CRON : process.env.ROOM_CRON || '0 2 * * *',
 }

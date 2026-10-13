@@ -112,6 +112,15 @@ npx sequelize-cli migration:generate --name create-hotel-table
 - npx sequelize-cli db:migrate
 - npx sequelize-cli db:migrate:undo
 
+### to add seed data 
+ - npx sequelize-cli seed:generate --name demo-user
+
+### Run all seed files
+ - npx sequelize-cli db:seed:all
+
+### Run a specific seed file
+ - npx sequelize-cli db:seed --seed xxxxx-demo-user.js || ts
+
 ### check migration applied and hotels table is created
 
 ### npm i bullmq ioredis node-cron
@@ -132,4 +141,7 @@ npx sequelize-cli migration:generate --name create-hotel-table
   - wsl -d Ubuntu sudo service redis-server start
   - wsl -d Ubuntu redis-cli
 
-
+### To run the project
+ - start redis server
+ - then start node server
+ 

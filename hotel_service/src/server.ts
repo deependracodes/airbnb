@@ -2,10 +2,14 @@ import express, { Express } from "express";
 import { serverConfig } from "./config/index.js";
 import v1Router from "./router/v1/index.router.js";
 import v2Router from "./router/v2/index.router.js";
-import { appErrorHandler, genericErrorHandler } from "./middlewares/error.middleware.js";
+import {
+  appErrorHandler,
+  genericErrorHandler,
+} from "./middlewares/error.middleware.js";
 import logger from "./config/logger.config.js";
 import { correlationMiddleware } from "./middlewares/corelation.middleware.js";
 import sequelize from "./db/models/sequelize.js";
+import { startScheduler } from "./crons/roomScheduler.cron.js";
 
 const app: Express = express();
 const port = serverConfig.PORT;
@@ -20,8 +24,10 @@ app.use("/api/v2", v2Router);
 app.use(appErrorHandler);
 app.use(genericErrorHandler);
 
-app.listen(port, async() => {
+app.listen(port, async () => {
   logger.info(`Server running on http://localhost:${port}`);
   await sequelize.authenticate();
   logger.info("Database connected successfully");
+  startScheduler();
+  logger.info("Room availability extension scheduler initialized");
 });
