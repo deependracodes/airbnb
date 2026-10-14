@@ -9,11 +9,11 @@ export async function pingHandlerV1(
 ): Promise<void> {
   try {
 
-    logger.info("Ping handler V1 called");
+    logger.info("Auth Ping handler V1 called");
     
    res.status(200).json({
       success: true,
-      message: "Pong! 1",
+      message: "Auth Service Pong! 1",
     });
   } catch (error) {
   

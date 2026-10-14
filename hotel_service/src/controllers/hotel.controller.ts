@@ -45,6 +45,21 @@ export async function getAllHotelsHandler(req: Request, res: Response, next: Nex
 
 }
 
+export async function getAllHotelsHandler2(req: Request, res: Response, next: NextFunction) {
+
+    // 1. Call the service layer
+
+    const hotelsResponse = await getAllHotelsService();
+
+    // 2. Send the response
+    res.status(StatusCodes.OK).json({
+        message: "Hotels found successfully from v2",
+        data: hotelsResponse,
+        success: true,
+    });
+
+}
+
 export async function deleteHotelHandler(req: Request, res: Response, next: NextFunction) {
 
     // 1. Call the service layer

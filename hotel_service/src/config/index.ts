@@ -24,6 +24,8 @@ type CronConfig = {
      ROOM_CRON : string
 }
 
+console.log(process.env.PORT,"HTOEL SERVICE")
+
 export const serverConfig: ServerConfig = {
   PORT: Number(process.env.PORT) || 3000,
 };
