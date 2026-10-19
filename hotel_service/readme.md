@@ -137,7 +137,7 @@ npx sequelize-cli migration:generate --name create-hotel-table
   - ping 
   - redis server is runing successfully
 
-### Connect usin git bash
+### Connect usin git bash (wsl windows subsystem for linux)
   - wsl -d Ubuntu sudo service redis-server start
   - wsl -d Ubuntu redis-cli
 
