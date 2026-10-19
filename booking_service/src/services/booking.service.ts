@@ -1,15 +1,15 @@
-import { CreateBookingDTO } from '../dto/booking.dto';
+import { CreateBookingDTO } from '../dtos/booking.dto';
 import { confirmBooking, createBooking, createIdempotencyKey, finalizeIdempotencyKey, getIdempotencyKeyWithLock } from '../repositories/booking.repository';
 import { BadRequestError, InternalServerError, NotFoundError } from '../utils/errors/app.error';
-import { generateIdempotencyKey } from '../utils/generateIdempotencyKey';
+import { generateIdempotencyKey } from '../utils/helpers/generateIdempotenyKey.helper';
 
 import prismaClient from '../prisma/client';
 import { redlock } from '../config/redis.config';
-import { serverConfig } from '../config';
+import { redisConig } from '../config';
 
 export async function createBookingService(createBookingDTO: CreateBookingDTO) {
 
-    const ttl = serverConfig.LOCK_TTL;
+    const ttl = redisConig.LOCK_TTL;
     const bookingResource = `hotel:${createBookingDTO.hotelId}`;
 
     try {

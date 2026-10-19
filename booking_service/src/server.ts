@@ -31,15 +31,15 @@ app.listen(serverConfig.PORT, () => {
     logger.info(`Server is running on http://localhost:${serverConfig.PORT}`);
     logger.info(`Press Ctrl+C to stop the server.`);
 
-    for(let i = 0; i < 1; i++) {
+    
         addEmailToQueue({
-            to: `sample from booking ${i}`,
+            to: 'deependrabahadurr@gmail.com',
             subject: "Sample Email booking",
-            templateId: "sample-template",
+            templateId: "welcome",
             params: {
-                name: "John Doe",
+                name: "Deependra Bhadur R",
                 orderId: "12345",
             }
         })
-    }
+    
 });

@@ -5,6 +5,7 @@ import { InternalServerError } from "../utils/errors/app.error";
 
 export async function sendEmail(to: string, subject: string, body: string) {
     try {
+
         await transporter.sendMail({
             from: mailerConfig.MAIL_USER,
             to,
@@ -13,6 +14,6 @@ export async function sendEmail(to: string, subject: string, body: string) {
         });
         logger.info(`Email sent to ${to} with subject "${subject}"`);
     } catch (error) {
-        throw new InternalServerError(`Failed to send email`);
+        throw new InternalServerError(`Failed to send email ${error}`);
     }
 }
