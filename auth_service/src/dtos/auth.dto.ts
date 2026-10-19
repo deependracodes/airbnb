@@ -5,13 +5,13 @@ export const createUserSchema = z.object({
     .string()
     .min(3, "Username must be at least 3 characters long")
     .max(20, "Username cannot exceed 20 characters"),
-  email: z.string().email("Invalid email format"),
-  password: z.string().min(8, "Password must be at least 8 characters long"),
+  email: z.email("Invalid email format"),
+  password: z.string().min(4, "Password must be at least 4 characters long"),
 });
 
 export const loginUserSchema = z.object({
-  email: z.string().email("Invalid email format"),
-  password: z.string().min(8, "Password must be at least 8 characters long"),
+  email: z.email("Invalid email format"),
+  password: z.string().min(4, "Password must be at least 4 characters long"),
 });
 
 export type CreateUserDto = z.infer<typeof createUserSchema>;

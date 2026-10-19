@@ -15,7 +15,7 @@ export async function registerUser(payload: CreateUserDto, roleName: string = "G
     payload.username,
     payload.email,
     hashedPassword,
-    roleIds as any
+    roleIds
   );
 
   return user;

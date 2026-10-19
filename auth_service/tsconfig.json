@@ -21,7 +21,6 @@
     "noImplicitThis": true,
     "useUnknownInCatchVariables": true,
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
 
     /* Additional safety */
     "noImplicitReturns": true,
