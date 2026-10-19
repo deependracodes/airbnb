@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { UnauthorizedError } from "../utils/errors/app.error";
 
-export const authMid = (
+export const authentication = (
   req: Request,
   res: Response,
   next: NextFunction

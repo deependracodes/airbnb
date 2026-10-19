@@ -29,4 +29,5 @@ export const initializeDefaultRolesService = async (): Promise<void> => {
       await roleRepo.createRoleRepo(roleData);
     }
   }
+
 };

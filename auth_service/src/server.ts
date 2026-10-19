@@ -8,6 +8,8 @@ import { correlationMiddleware } from "./middlewares/corelation.middleware.js";
 import { connectDB } from "./config/db.conn.js";
 import { globalLimiter } from "./middlewares/rate-limiter.middleware.js";
 import { bookingsProxy, hotelsProxy ,reviewsProxy} from "../src/middlewares/proxy.middleware.js";
+import { authentication } from "./middlewares/authentication.middleware.js";
+import { authorization } from "./middlewares/authorization.middleware.js";
 
 const app: Express = express();
 const port = serverConfig.PORT;
@@ -21,9 +23,44 @@ app.use(correlationMiddleware);
 app.use("/api/v1", v1Router);
 app.use("/api/v2", v2Router);
 
-app.use(/\/api\/v\d+\/hotels|\/hotels/, hotelsProxy);
-app.use(/\/api\/v\d+\/bookings|\/bookings/, bookingsProxy);
-app.use(/\/api\/v\d+\/reviews|\/reviews/, reviewsProxy);
+// app.use(/\/api\/v\d+\/hotels|\/hotels/, hotelsProxy);
+// app.use(/\/api\/v\d+\/bookings|\/bookings/, bookingsProxy);
+// app.use(/\/api\/v\d+\/reviews|\/reviews/, reviewsProxy);
+
+// 1. Hotels Proxy
+// Public read access, but protected write/delete actions
+app.use("/api/v1/hotels", (req, res, next) => {
+  if (req.method === "GET") {
+    return hotelsProxy(req, res, next);
+  }
+  // Mutating operations require authentication and host/admin role
+  return authentication(req, res, () => {
+    authorization("host", "admin")(req, res, () => {
+      hotelsProxy(req, res, next);
+    });
+  });
+});
+
+// 2. Bookings Proxy
+// All booking actions require authentication (guests or admins)
+app.use("/api/v1/bookings", authentication, (req, res, next) => {
+  authorization("guest", "admin")(req, res, () => {
+    bookingsProxy(req, res, next);
+  });
+});
+
+// 3. Reviews Proxy
+// Reading reviews is public, writing requires authentication
+app.use("/api/v1/reviews", (req, res, next) => {
+  if (req.method === "GET") {
+    return reviewsProxy(req, res, next);
+  }
+  return authentication(req, res, () => {
+    authorization("guest", "admin")(req, res, () => {
+      reviewsProxy(req, res, next);
+    });
+  });
+});
 
 
 app.use(errorMiddleware);
