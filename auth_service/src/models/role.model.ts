@@ -3,7 +3,7 @@ import { Schema, model, Document, Types } from "mongoose";
 export interface IRole extends Document {
   name: string;
   description?: string;
-  permissions: Types.ObjectId[]; // References to Permission documents
+  permissions: Types.ObjectId[]; 
   createdAt: Date;
   updatedAt: Date;
 }
@@ -20,7 +20,7 @@ export const RoleModel = model<IRole>("Role", roleSchema);
 
 {
   "_id": "1",
-  "name": "HOTEL_MANAGER",
+  "name": "host",
   "description": "Manages hotel properties",
   "permissions": [
     "1",
@@ -28,7 +28,7 @@ export const RoleModel = model<IRole>("Role", roleSchema);
   ]
 }
 
-# Roles we can have fully fledged
+# Roles we can have fully fledged but we are keeping only 3 admin,host,guest
 
 1. Guest (Standard User)
    - Scope: The default role assigned upon signup.
@@ -38,16 +38,17 @@ export const RoleModel = model<IRole>("Role", roleSchema);
    - Scope: Manages property portfolios and listings.
    - Capabilities: Creates and updates hotel properties, manages room inventory and pricing, views bookings associated with their specific properties, and responds to guest reviews.
 
-3. Hotel Manager / Property Staff
+
+3.  Admin (Main Admin)
+   - Scope: Full system-wide control and platform governance.
+   - Capabilities: Manages global system settings, assigns roles and custom permissions to users, oversees all microservice data layers, and handles system-level audits.
+
+4. Hotel Manager / Property Staff
    - Scope: Operational management delegated by a host.
    - Capabilities: Handles daily operations, updates availability status, and manages guest communications for without holding root ownership of the listing account.
 
-4. Customer Support / Moderator
+5. Customer Support / Moderator
    - Scope: Dispute resolution and content governance.
    - Capabilities: Accesses booking records to assist with cancellations or refunds, moderates or removes flagged reviews, and handles user account disputes.
-
-5. Super Admin (Main Admin)
-   - Scope: Full system-wide control and platform governance.
-   - Capabilities: Manages global system settings, assigns roles and custom permissions to users, oversees all microservice data layers, and handles system-level audits.
 
 */

@@ -32,6 +32,7 @@ export async function getHotelByIdHandler(req: Request, res: Response, next: Nex
 
 export async function getAllHotelsHandler(req: Request, res: Response, next: NextFunction) {
 
+    console.log("hotler controller" , req.headers)
     // 1. Call the service layer
 
     const hotelsResponse = await getAllHotelsService();

@@ -1,11 +1,12 @@
-import { UserModel, IUser } from "../models/user.model.js";
+import { UserModel, IUser, UserRole } from "../models/user.model.js";
 import { Types } from "mongoose";
 
-export async function createUser(username: string, email: string, passwordHash: string, roleIds: Types.ObjectId[] = []): Promise<IUser> {
+export async function createUser(username: string, email: string, passwordHash: string,role:UserRole , roleIds: Types.ObjectId[] = []): Promise<IUser> {
   return await UserModel.create({
     username,
     email,
     passwordHash,
+    role,
     roles: roleIds,
   });
 }

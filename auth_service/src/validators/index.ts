@@ -9,7 +9,8 @@ export const validateRequestBody = (schema: ZodType) => {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      await schema.parseAsync(req.body);
+      // await schema.parseAsync(req.body);
+      req.body = await schema.parseAsync(req.body);
       next();
     } catch (error) {
       if (error instanceof ZodError) {
@@ -21,7 +22,7 @@ export const validateRequestBody = (schema: ZodType) => {
 
         res.status(400).json({
           success: false,
-          message : "Invalid request body",
+          message: "Invalid request body",
           errors: formattedErrors,
         });
         return;
@@ -39,7 +40,9 @@ export const validateQueryParams = (schema: ZodType) => {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      await schema.parseAsync(req.query);
+      // await schema.parseAsync(req.query);
+      const parsedData = await schema.parseAsync(req.query);
+      req.query = parsedData as any;
       next();
     } catch (error) {
       if (error instanceof ZodError) {
@@ -51,7 +54,7 @@ export const validateQueryParams = (schema: ZodType) => {
 
         res.status(400).json({
           success: false,
-          message : "Invalid request body",
+          message: "Invalid request body",
           errors: formattedErrors,
         });
         return;
@@ -65,7 +68,6 @@ export const validateQueryParams = (schema: ZodType) => {
 // more generic
 
 type RequestLocation = "body" | "query" | "params";
-
 export const validate = (schema: ZodType, target: RequestLocation = "body") => {
   return async (
     req: Request,
@@ -73,8 +75,14 @@ export const validate = (schema: ZodType, target: RequestLocation = "body") => {
     next: NextFunction
   ): Promise<void> => {
     try {
-      // Parses and strips unknown keys dynamically per incoming HTTP request
-      req[target] = await schema.parseAsync(req[target]);
+      const parsedData = await schema.parseAsync(req[target]);
+
+      if (target === "query") {
+        req.query = parsedData as any;
+      } else {
+        req[target] = parsedData;
+      }
+
       next();
     } catch (error) {
       if (error instanceof ZodError) {

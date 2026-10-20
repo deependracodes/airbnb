@@ -2,7 +2,7 @@ import express, { Express } from "express";
 import { serverConfig } from "./config/index.js";
 import v1Router from "./router/v1/index.router.js";
 import v2Router from "./router/v2/index.router.js";
-import { errorMiddleware } from "./middlewares/error.middleware.js";
+import { errorMiddleware, genericErrorHandler } from "./middlewares/error.middleware.js";
 import logger from "./config/logger.config.js";
 import { correlationMiddleware } from "./middlewares/corelation.middleware.js";
 import { connectDB } from "./config/db.conn.js";
@@ -29,12 +29,41 @@ app.use("/api/v2", v2Router);
 
 // 1. Hotels Proxy
 // Public read access, but protected write/delete actions
-app.use("/api/v1/hotels", (req, res, next) => {
-  if (req.method === "GET") {
-    return hotelsProxy(req, res, next);
+// app.use("/api/v1/hotels", (req, res, next) => {
+//   if (req.method === "GET") {
+//     return hotelsProxy(req, res, next);
+//   }
+//   // Mutating operations require authentication and host/admin role
+//   return authentication(req, res, () => {
+//     authorization("host", "admin")(req, res, () => {
+//       hotelsProxy(req, res, next);
+//     });
+//   });
+// });
+// Middleware to conditionally or fully authenticate hotel routes
+app.use("/api/v1/hotels", (req, res, next): void => {
+  const authHeader = req.headers["authorization"];
+  
+  // Branch 1: Public GET request without auth header
+  if (!authHeader && req.method === "GET") {
+    hotelsProxy(req, res, next);
+    return;
   }
-  // Mutating operations require authentication and host/admin role
-  return authentication(req, res, () => {
+
+  // Branch 2: Authenticated flow
+  authentication(req, res, () => {
+    // Inject user identity headers for downstream microservice consumption
+    if (req.user_id) req.headers["x-user-id"] = req.user_id;
+    if (req.user_name) req.headers["x-user-name"] = req.user_name;
+    if (req.user_email) req.headers["x-user-email"] = req.user_email;
+    req.headers["x-user-roles"] = JSON.stringify(req.user_roles || []);
+
+    if (req.method === "GET") {
+      hotelsProxy(req, res, next);
+      return;
+    }
+
+    // Mutating operations require host or admin role
     authorization("host", "admin")(req, res, () => {
       hotelsProxy(req, res, next);
     });
@@ -64,6 +93,8 @@ app.use("/api/v1/reviews", (req, res, next) => {
 
 
 app.use(errorMiddleware);
+app.use(genericErrorHandler);
+
 
 async function startServer() {
   try {

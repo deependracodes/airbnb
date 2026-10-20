@@ -9,14 +9,20 @@ export interface IPermission extends Document {
   updatedAt: Date;
 }
 
-const permissionSchema = new Schema<IPermission>({
-  name: { type: String, required: true, unique: true },
-  description: { type: String },
-  resource: { type: String, required: true }, // e.g., 'hotel', 'booking'
-  action: { type: String, required: true },     // e.g., 'create', 'read', 'delete'
-}, { timestamps: true });
+const permissionSchema = new Schema<IPermission>(
+  {
+    name: { type: String, required: true, unique: true },
+    description: { type: String },
+    resource: { type: String, required: true }, // 'hotel','booking','room','room_category','booking','review'
+    action: { type: String, required: true }, // e.g., 'create', 'read', 'update', 'delete'
+  },
+  { timestamps: true },
+);
 
-export const PermissionModel = model<IPermission>("Permission", permissionSchema);
+export const PermissionModel = model<IPermission>(
+  "Permission",
+  permissionSchema,
+);
 
 /*
 {

@@ -6,6 +6,8 @@ export const authorization = (...allowedRoles: string[]) => {
     try {
       const userRoles = req.user_roles || [];
 
+      console.log(userRoles, "authorization")
+
       if (userRoles.length === 0) {
         throw new ForbiddenError("Access denied: No roles assigned to user");
       }

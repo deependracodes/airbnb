@@ -8,9 +8,6 @@ function connectToRedis() {
     return () => {
       if (!connection) {
         connection = new IORedis(redisConig.REDIS_SERVER_URL,
-        //      {
-        //   enableOfflineQueue: false,
-        // }
     );
         return connection;
       }
